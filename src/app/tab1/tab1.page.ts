@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { VaultServiceState, VaultService } from '../vault.service';
+import { VaultServiceState, VaultService } from '../services/vault.service';
 
 @Component({
   selector: 'app-tab1',
@@ -12,6 +12,12 @@ export class Tab1Page {
 
   constructor(private vaultService: VaultService) {
     this.state = vaultService.state;
+  }
+
+  async ionViewDidEnter(){
+    //Update state based on vault's current config
+    await this.vaultService.updateVaultState();
+    this.state = this.vaultService.state;
   }
 
   async setSession(data: string) {

@@ -32,6 +32,7 @@ export interface VaultServiceState {
 
 @Injectable({ providedIn: 'root' })
 export class VaultService {
+  currentConfig: IdentityVaultConfig;
   public state: VaultServiceState = {
     canUseBiometrics: false,
     canUsePasscode: false,
@@ -70,6 +71,11 @@ export class VaultService {
         this.state.isLocked = false;
       });
     });
+    await this.updateVaultState();
+    this.vault.onConfigChanged(async () => await this.updateVaultState);
+  }
+
+  async updateVaultState() {
     this.state.isLocked = await this.vault.isLocked();
     this.state.isEmpty = await this.vault.isEmpty();
   }
@@ -97,7 +103,8 @@ export class VaultService {
         type = VaultType.SecureStorage;
         deviceSecurityType = DeviceSecurityType.None;
     }
-    await this.vault.updateConfig({ ...this.vault.config, type, deviceSecurityType });
+    this.currentConfig = { ...this.vault.config, type, deviceSecurityType };
+    await this.vault.updateConfig(this.currentConfig);
   }
 
   async setSession(value: string): Promise<void> {
