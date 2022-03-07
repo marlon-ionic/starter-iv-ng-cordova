@@ -1,0 +1,7 @@
+{
+  "name": "starter-iv-ng-cordova",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
