@@ -44,13 +44,11 @@ export class VaultService {
 
   vault: Vault | BrowserVault;
 
-  constructor(private ngZone: NgZone, private platform: Platform) {
-    this.vault = platform.is('hybrid') ? new Vault(config) : new BrowserVault(config);
-  }
+  constructor(private ngZone: NgZone, private platform: Platform) { }
 
   async init() {
     await this.platform.ready(); // This is required only for Cordova
-
+    this.vault = this.platform.is('hybrid') ? new Vault(config) : new BrowserVault(config);
     this.state.canUseBiometrics = await Device.isBiometricsEnabled();
     this.state.canUsePasscode = await Device.isSystemPasscodeSet();
     this.state.privacyScreen =
