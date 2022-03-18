@@ -69,6 +69,10 @@ export class VaultService {
         this.state.isLocked = false;
       });
     });
+
+    // In Identity Vault 5.5.2 - Adding an onError handler throws an error in iOS
+    this.vault.onError(() => {});
+
     await this.updateVaultState();
     this.vault.onConfigChanged(async () => await this.updateVaultState);
   }
