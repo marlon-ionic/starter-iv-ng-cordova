@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Device } from '@ionic-enterprise/identity-vault';
 import { VaultServiceState, VaultService } from '../vault.service';
 
 @Component({
@@ -9,9 +10,25 @@ import { VaultServiceState, VaultService } from '../vault.service';
 export class Tab1Page {
 
   public state: VaultServiceState;
+  public promptLabel = 'Use biometric security';
 
   constructor(private vaultService: VaultService) {
     this.state = vaultService.state;
+  }
+
+  async ionViewDidEnter() {
+   await this.showBiometricPrompt();
+  }
+
+  async showBiometricPrompt() {
+    try {
+      await  Device.showBiometricPrompt({
+        iosBiometricsLocalizedReason: this.promptLabel
+      });
+    } catch (e) {
+      // This will catch if request fails or the user cancels the prompt!
+      console.log('caught a biometic prompt error', e);
+    }
   }
 
   async setSession(data: string) {
